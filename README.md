@@ -23,3 +23,7 @@ Microweb framework written in python, as web server refer to [documentations](ht
 ## Running Web App
 
 Set up a python virtual environmet first with `python3 -m venv .venv` then `source .venv/bin/activate`. After that install requirements first with `pip install requirements.txt` then `flask run` command after cloning repository, go to specified port to see the web app.
+
+OR
+
+If you have docker installed `docker build <directory to project> -t <image-name>` and then after finished `docker run -it -p 5000:5000 safe-route-web:0.1`
