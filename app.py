@@ -1,10 +1,12 @@
 from flask import Flask, render_template
 from flask_session import Session
+from flask_cors import CORS, cross_origin
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions
 
 # Initializing flask application
 app = Flask(__name__)
+cors = CORS(app)
 
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] == True
