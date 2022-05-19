@@ -30,16 +30,33 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
-    
-    var popup = L.popup();
 
-    function onMapClick(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
-    }
-    map.on('click', onMapClick);
+    var info = L.control();
+
+    info.onAdd = function (map) {
+        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+        this.update();
+        return this._div;
+    };
+
+    // method that we will use to update the control based on feature properties passed
+    info.update = function (props) {
+        this._div.innerHTML = '<h4>Jakarta Crime Rate</h4>' +  (props ?
+        '<b>' + props.name + '</b><br />' + props.crimerate + ' %'
+        : 'Hover over a regency');
+    };
+
+    info.addTo(map);
+    
+    //var popup = L.popup();
+
+    //function onMapClick(e) {
+    //popup
+    //    .setLatLng(e.latlng)
+    //    .setContent("You clicked the map at " + e.latlng.toString())
+    //    .openOn(map);
+    //}
+    //map.on('click', onMapClick);
 
     var circle = L.circle([-6.141237, 107.077354], {
       color: 'red',
@@ -48,12 +65,48 @@
       radius: 2000
     }).addTo(map);
     circle.bindPopup("Daerah Berbahaya");
+
+    function highlightFeature(e) {
+      var layer = e.target;
+
+      layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+      });
+
+      if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+          layer.bringToFront();
+      }
+      info.update(layer.feature.properties);
+    }
+
+    function resetHighlight(e) {
+        jakartaData.resetStyle(e.target);
+        info.update();
+    }
+
+    function zoomToFeature(e) {
+	    	map.fitBounds(e.target.getBounds());
+  	}
     
     var jakartaData = L.geoPackageFeatureLayer([], {
       geoPackageUrl: "./static/assets/Kecamatan-DKI-Jakarta.gpkg",
       layerName: 'Kecamatan-DKI-Jakarta',
+      onEachFeature : function(feature, layer){
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: zoomToFeature
+        });
+    }
     }).addTo(map);
 
+    geojson = L.geoJson(jakartaData, {
+        style: style,
+        onEachFeature: onEachFeature
+    }).addTo(map);
 
   </script>
 {% endblock %}
