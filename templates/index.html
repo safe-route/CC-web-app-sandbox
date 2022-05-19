@@ -43,22 +43,22 @@
     info.update = function (props) {
         this._div.innerHTML = '<h4>Jakarta Crime Rate</h4>' +  (props ?
         '<b>' + props.name + '</b><br />' + props.crimerate + ' %'
-        : 'Hover over a regency');
+        : 'Hover over a district');
     };
 
     info.addTo(map);
     
-    //var popup = L.popup();
+    var popup = L.popup();
 
-    //function onMapClick(e) {
-    //popup
-    //    .setLatLng(e.latlng)
-    //    .setContent("You clicked the map at " + e.latlng.toString())
-    //    .openOn(map);
-    //}
-    //map.on('click', onMapClick);
+    function onMapClick(e) {
+    popup
+       .setLatLng(e.latlng)
+       .setContent("You clicked the map at " + e.latlng.toString())
+       .openOn(map);
+    }
+    map.on('click', onMapClick);
 
-    var circle = L.circle([-6.141237, 107.077354], {
+    var circle = L.circle([-6.175046, 106.824887], {
       color: 'red',
       fillColor: '#f03',
       fillOpacity: 0.5,
