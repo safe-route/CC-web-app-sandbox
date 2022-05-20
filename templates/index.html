@@ -48,15 +48,15 @@
 
     info.addTo(map);
     
-    var popup = L.popup();
+    //var popup = L.popup();
 
-    function onMapClick(e) {
-    popup
-       .setLatLng(e.latlng)
-       .setContent("You clicked the map at " + e.latlng.toString())
-       .openOn(map);
-    }
-    map.on('click', onMapClick);
+    //function onMapClick(e) {
+    //popup
+    //   .setLatLng(e.latlng)
+    //   .setContent("You clicked the map at " + e.latlng.toString())
+    //   .openOn(map);
+    //}
+    //map.on('click', onMapClick);
 
     var circle = L.circle([-6.175046, 106.824887], {
       color: 'red',
@@ -94,11 +94,15 @@
     var jakartaData = L.geoPackageFeatureLayer([], {
       geoPackageUrl: "./static/assets/Kecamatan-DKI-Jakarta.gpkg",
       layerName: 'Kecamatan-DKI-Jakarta',
-      onEachFeature : function(feature, layer){
+      onEachFeature : function(feature, layer, e){
+        var name = feature.properties.name;
+        var crimerate = feature.properties.crimerate;
+        layer.on('click', function() {layer.bindPopup(name + ": " + crimerate);});
+        //layer.on('mouseout', function() {layer.closePopup();});
         layer.on({
             mouseover: highlightFeature,
             mouseout: resetHighlight,
-            click: zoomToFeature
+            //click: zoomToFeature
         });
     }
     }).addTo(map);
