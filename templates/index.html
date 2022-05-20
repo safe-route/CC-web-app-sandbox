@@ -13,6 +13,7 @@
     <script src="https://unpkg.com/leaflet@1.8.0/dist/leaflet.js"
     integrity="sha512-BB3hKbKWOc9Ez/TAwyWxNXeoV9c1v6FIeYiBieIWkpLjauysF18NzgR1MBNBXf8/KABdlkX68nAhlwcDFLGPCQ=="
     crossorigin=""></script>
+    <!-- Geopackage plugin via unpkg -->
     <script src="https://unpkg.com/@ngageoint/geopackage@4.1.0/dist/geopackage.min.js"></script>
 
 {% endblock %}
@@ -23,23 +24,29 @@
 
   <script>
     
-    // initialize the map
+    // Initialize the map
     var map = L.map('map').setView([-6.180212, 106.81857], 11);
 
-    // load a tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // Set map boundary and bouce back
+    map.setMaxBounds(map.getBounds());
+
+    // Load a tile layer, load stamen as tile layer
+    L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner/{z}/{x}/{y}{r}.{ext}', {
+      subdomains: 'abcd',
+      minZoom: 1,
+      maxZoom: 16,
+      ext: 'png',
     }).addTo(map);
 
     var info = L.control();
 
     info.onAdd = function (map) {
-        this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+        this._div = L.DomUtil.create('div', 'info'); // Create a div with a class "info"
         this.update();
         return this._div;
     };
 
-    // method that we will use to update the control based on feature properties passed
+    // Method that we will use to update the control based on feature properties passed
     info.update = function (props) {
         this._div.innerHTML = '<h4>Jakarta Crime Rate</h4>' +  (props ?
         '<b>' + props.name + '</b><br />' + props.crimerate + ' %'
@@ -83,7 +90,7 @@
     }
 
     function resetHighlight(e) {
-        jakartaData.resetStyle(e.target);
+        jakartaDistrict.resetStyle(e.target);
         info.update();
     }
 
@@ -91,23 +98,28 @@
 	    	map.fitBounds(e.target.getBounds());
   	}
     
-    var jakartaData = L.geoPackageFeatureLayer([], {
+    // Use geopackage to set a layer
+
+    var jakartaDistrict = L.geoPackageFeatureLayer([], {
       geoPackageUrl: "./static/assets/Kecamatan-DKI-Jakarta.gpkg",
       layerName: 'Kecamatan-DKI-Jakarta',
       onEachFeature : function(feature, layer, e){
         var name = feature.properties.name;
         var crimerate = feature.properties.crimerate;
         layer.on('click', function() {layer.bindPopup(name + ": " + crimerate);});
+
         //layer.on('mouseout', function() {layer.closePopup();});
+
         layer.on({
             mouseover: highlightFeature,
             mouseout: resetHighlight,
+            
             //click: zoomToFeature
         });
     }
     }).addTo(map);
 
-    geojson = L.geoJson(jakartaData, {
+    geojson = L.geoJson(jakartaDistrict, {
         style: style,
         onEachFeature: onEachFeature
     }).addTo(map);
