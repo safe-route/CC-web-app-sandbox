@@ -65,13 +65,25 @@
     //}
     //map.on('click', onMapClick);
 
-    var circle = L.circle([-6.175046, 106.824887], {
-      color: 'red',
-      fillColor: '#f03',
-      fillOpacity: 0.5,
-      radius: 2000
-    }).addTo(map);
-    circle.bindPopup("Daerah Berbahaya");
+    function PointCrime(){
+      fetch("./static/assets/clustering.json")
+        .then(response=>response.json())
+        .then(data=>{
+          var mydata = data;
+          var index = mydata.length;
+          for (i=0; i<=index-1; i++){
+            var circle = L.circle([mydata[i].latitude, mydata[i].longitude], {
+              color: 'red',
+              fillColor: '#f03',
+              fillOpacity: 0.5,
+              radius: mydata[i].range
+            }).addTo(map);
+          circle.bindPopup("Daerah Berbahaya");
+          }
+            
+        });
+    }
+    PointCrime();
 
     function highlightFeature(e) {
       var layer = e.target;
