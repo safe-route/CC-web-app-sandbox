@@ -2,17 +2,25 @@
 
 A simple web application for interacting with API's, map library, and testing stuff before being implemented. Built with flask, which used python so that nearly anyone can try their implementation before going to prod.
 
-## Overview
+## Summary
 
 This is a simple flask web server that aims to provide an early sandbox or testing ground to fully integrate feature, testing them, and adding new features.
 
-## Stack
+## References
+
+The website was build following the regular python development environment practices by using virtual environment, with packages managed with PIP. Flask web server was made with the basis of [minimal working example](https://flask.palletsprojects.com/en/2.1.x/quickstart/) location on flask documentary. With some additional configuration to set flask environment.
+
+Other than that Dockerfile is made with previously tested (from my previous project) with [multi-stage image building](https://docs.docker.com/develop/develop-images/multistage-build/). By using the multi-stage build (which need tobe ideally optimized for each resources) we can further decrease the image size, improving image fecthing and spin-up containers faster from image.
+
+### Stack
 
 - Leaflet: an open-source JavaScript library for interactive web maps. Chosen because the [high popularity](https://stackshare.io/leaflet#description), second to Google maps.
 
 - Flask: Microweb framework written in python, as web server refer to [documentations](https://flask.palletsprojects.com/en/2.1.x/)
 
-## Editing The Web App
+## Usage
+
+### Editing The Web App
 
 Server stuff are all of the files not located in `templates` and `static`, if you don't want to modify the web server please only modify files that are located in those two directories mentioned above. For rundown of each specific files in case you **DO** wanted to edit it:
 
@@ -26,7 +34,7 @@ As for the interface which is served with simple HTML, CSS, and JS. go to `/web-
 Flask use **jinja** (refer to docs), so you only need to edit the **index.html** file, no need to touch the **layout html**.
 
 
-## Running Web App
+### Running Web App
 
 Set up a python virtual environmet first with `python3 -m venv .venv` then `source .venv/bin/activate`. After that install requirements first with `pip install requirements.txt` then `flask run` command after cloning repository, go to specified port in your browser to see the web app.
 
